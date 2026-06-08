@@ -10,9 +10,9 @@ function PokemonCard({pokemonName,pokemonUrl,pokemonAltText,pokemonMoves,pokemon
 
     <p>Abilities:</p>
     <ul>
-        {pokemonAbilities?.map((ability)=> (
-            <li key={ability?.ability.name}>
-                {ability?.ability.name}
+        {pokemonAbilities.map((ability)=> (
+            <li key={ability.ability.name}>
+                {ability.ability.name}
             </li>
         ))}
     </ul>
