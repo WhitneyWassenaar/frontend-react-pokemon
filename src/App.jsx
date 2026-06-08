@@ -7,16 +7,20 @@ function App() {
     const [pokemon,setPokemon] = useState([]);
 
     useEffect(() => {
-        const getPokemon = async (pokemonName) => {
-            const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`);
 
-            setPokemon(previousPokemon => [...previousPokemon,response.data]);
+        const getPokemonData = async () => {
+            const pokemonList = await axios.get("https://pokeapi.co/api/v2/pokemon"); // API GET request
+            const results = pokemonList.data.results; // opgehaalde data, array met objects en elke object is {name:"naampokemon", url: "urlvanpokemon"}
 
-            // console.log(response.data) // controle in console
-            // setPokemon(response.data) // opgehaalde data van API wordt in setPokemon opgeslagen
-        }
-        getPokemon("jigglypuff");
-        getPokemon("ditto");
+            const pokemonDetail = results.map(async (p) => {
+                const response = await axios.get(p.url);
+                return response.data
+            });
+
+            const fullPokemon = await Promise.all(pokemonDetail);
+            setPokemon(fullPokemon);
+        };
+        getPokemonData();
 
     }, []); // [] staat voor "alleen bij de éérste render"
 

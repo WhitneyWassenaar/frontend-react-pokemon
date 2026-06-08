@@ -116,3 +116,51 @@ De PokemonCard component stond al in de return-statement van `App.jsx`, maar het
 4. Voor elke item per loop geef je 1 `PokemonCard` component terug. Dus in dit geval maakt React 2 PokemonCards
 5. Het object is `fetchedPokemon` dus die gebruik je bij het aanspreken van specifieke objecten
 6. Bij de `map` method, wordt er gebruikgemaakt van een key. De key moet uniek zijn om efficiënt te kunnen updaten en items te kunnen herkennen. Gelukkig heeft elke pokemon zijn of haar eigen id, dus kunnen we `id` aanspreken als key.
+
+### Het weergeven van wel 20 pokemon(kaarten)!
+
+Ik ga nu een stapje verder... Het is nu de bedoeling dat ik 20 pokemon(kaarten) ga weergeven op het scherm. Daar zal vast wel een endpoint voor bestaan.
+Nadat ik de [documentatie](https://pokeapi.co/docs/v2#resource-listspagination-section) had gelezen, had ik dus begrepen dat een endpoint zonder resource ID of naam standaard een lijst van 20 items teruggeeft. En dan krijg je per pokemon een naam en url.
+
+Dus dan is de endpoint: `https://pokeapi.co/api/v2/pokemon`. En krijg je een array met objecten terug
+
+Maar dat is niet genoeg om de pokemonCard te voorzien van alle nodige informatie. Dus moet ik gebruikmaken van 2 API calls.
+1. 1 API call voor het ophalen van de lijst van 20 objecten met naam en url
+2. 1 API call die gebruikmaakt van de url die wordt meeggeven van de eertse API call.
+
+
+Ik vond dit gedeelte lastig omdat ik niet zo goed wist hoe ik de code moest opbouwen. Ik heb veel gebruik gemaakt van chatgpt, maar hopelijk begrijp ik het beter door het ook nog eens uit te schrijven.
+
+API calls worden gedaan in de useEffect hook.
+
+1. Ik maak de variabele `getPokemonData` aan en wijs een async functie toe.
+2. In de async functie schrijf ik mijn eerste API call, de get request noem ik `pokemonList` omdat ik met deze API GET request de array met 20 objecten ga ophalen. Ik gebruik daarvoor de url: `https://pokeapi.co/api/v2/pokemon`
+3. De resultaten sla ik op in een variabele `results`.
+4. Daarna ga ik door naar de 2de API call, daarvoor zou ik eigenlijk `https://pokeapi.co/api/v2/pokemon/{pokemon-naam}` moeten gebruiken, maar ik weet dat bij de eerste API call, de naam van de pokemon al wordt opgehaald, die ik kan gebruiken voor de 2de API call.
+5. Omdat `results` een array is van 20 objecten, is het logisch om hier door heen te mappen. 
+6. Wanneer je de map method gebruikt, wordt er een nieuwe array aangemaakt. Het is dan ook logisch om de nieuwe array in een variabele te stoppen.
+7. Dus beginnen we eerst met `const pokemonDetail =`, daarna pakken we results en beginnen we er door heen te mappen met `map`. je krijgt dan:
+```javascript
+const pokemonDetail = results.map()
+```
+8. Nu komen we op een punt dat we iets gaan doen wat tijd gaat kosten, namelijk de API call gebruiken, die dan een Promise terug geeft.
+9. Wanneer async niet wordt gebruikt krijg je gelijk resultaat terug maar dat is hoogstwaarschijnlijk altijd te vroeg waardoor je dus alleen een Promise terug krijgt. Met async wordt er ook nog steeds een Promise teruggegeven maar wordt er gewacht totdat de data teruggegeven wordt. Dus schrijven we daarna `async`.
+```javascript
+const pokemonDetail = results.map(async)
+```
+10. Elke pokemon moet nog opgehaald worden via internet met axios.get(p.url), de `p` is een object en kan elke naam hebben, maar in dit geval staat `p` voor pokemon.
+11. Als je goed kijkt is de url van de elke pokemon eigenlijk de endpoint van de 2de API call die ik zou gebruiken. maar die staat dus al kant klaar bij elke pokemon die opgehaald wordt. En dat is `url`. De data sla je op in een variabele `response`, daar zit  nu de info over de pokemon in zoals, moves, gewicht etc.
+
+```javascript
+import axios from "axios";
+
+const pokemonDetail = results.map((p) => {
+    const response = await axios.get(p.url);
+})
+```
+12. Nu kom ik op een stuk code uit die ik nu helemaal niet begrijp, waarom wordt deze gebruikt? `const fullPokemon = await Promise.all(pokemonDetail);`
+13. `Promise.all` : **wacht tot alle promises klaar zijn.** Want, wanneer `pokemonDetail` wordt opgehaald kost het tijd voordat de data echt is opgehaald, in de tussentijd krijg je alleen Promises terug, zoals dit `[Promise,Promise,Promise, ...].
+14. `await`: wacht tot alles klaar is en ga pas verder naar de volgende stuk code
+15. `fullPokemon`: Dit is de complete opgeslagen data van de pokemon dat bruikbaar is in React state
+16. In ander woorden: `wacht tot alle API calls klaar zijn en stop alle echte Pokémon data in één array`
+
