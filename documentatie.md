@@ -18,6 +18,8 @@ Tips:
 * `&&` component rendert pas als de data bestaat
 * state zet je altijd zo hoog mogelijk in de functie
 
+---
+
 ## Het weergeven van 1 pokemon(kaart)
 Ik kreeg heel veel errors over properties die nog undefined waren wanneer de map method in het component `PokemonCard.jsx` werd uitgevoerd. Ik had dan wel de optional chaining in `App.jsx` toegepast maar niet in de dit component. Dus heb ik optional chaining ook in het component toegepast.
 ```javascript
@@ -117,6 +119,8 @@ De PokemonCard component stond al in de return-statement van `App.jsx`, maar het
 5. Het object is `fetchedPokemon` dus die gebruik je bij het aanspreken van specifieke objecten
 6. Bij de `map` method, wordt er gebruikgemaakt van een key. De key moet uniek zijn om efficiënt te kunnen updaten en items te kunnen herkennen. Gelukkig heeft elke pokemon zijn of haar eigen id, dus kunnen we `id` aanspreken als key.
 
+---
+
 ### Het weergeven van wel 20 pokemon(kaarten)!
 
 Ik ga nu een stapje verder... Het is nu de bedoeling dat ik 20 pokemon(kaarten) ga weergeven op het scherm. Daar zal vast wel een endpoint voor bestaan.
@@ -163,4 +167,9 @@ const pokemonDetail = results.map((p) => {
 14. `await`: wacht tot alles klaar is en ga pas verder naar de volgende stuk code
 15. `fullPokemon`: Dit is de complete opgeslagen data van de pokemon dat bruikbaar is in React state
 16. In ander woorden: `wacht tot alle API calls klaar zijn en stop alle echte Pokémon data in één array`
+
+---
+
+## 2 knoppen maken
+Ik maak 2 useStates aan voor vorige en volgende set aan pokemons.
 
