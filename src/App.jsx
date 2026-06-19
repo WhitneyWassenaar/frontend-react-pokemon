@@ -68,6 +68,7 @@ function App() {
                 text={"volgende"}
             />
             {loading && <p>Pokémon worden geladen...</p>}
+            {error && <p>{error}</p>}
             {pokemon.map((fetchedPokemon) => (
                 <PokemonCard
                     key={fetchedPokemon.id}
