@@ -9,20 +9,35 @@ function App() {
     const [previousUrl,setPreviousUrl] = useState(null);
     const [nextUrl,setNextUrl] = useState(null);
 
+    const [loading,setLoading] = useState(false);
+    const [error,setError] =useState(null);
+
     const getPokemonData = async (url) => {
-        const pokemonList = await axios.get(url);
-        const results = pokemonList.data.results;
+        setLoading(true);
+        setError(null);
+        try{
+            const pokemonList = await axios.get(url);
+            const results = pokemonList.data.results;
 
-        const pokemonDetail = results.map(async (p) => {
-            const response = await axios.get(p.url);
-            return response.data
-        });
+            const pokemonDetail = results.map(async (p) => {
+                const response = await axios.get(p.url);
+                return response.data
+            });
 
-        const fullPokemon = await Promise.all(pokemonDetail);
-        setPokemon(fullPokemon);
+            const fullPokemon = await Promise.all(pokemonDetail);
+            setPokemon(fullPokemon);
 
-        setPreviousUrl(pokemonList.data.previous);
-        setNextUrl(pokemonList.data.next);
+            setPreviousUrl(pokemonList.data.previous);
+            setNextUrl(pokemonList.data.next);
+        }
+        catch (error) {
+            setError("Er ging iets  mis bij het ophalen van Pokémon :(")
+            console.log(error)
+        }
+        finally {
+            setLoading(false)
+        }
+
     }
 
     useEffect(() => {
@@ -52,7 +67,7 @@ function App() {
                 disabled={!nextUrl}
                 text={"volgende"}
             />
-
+            {loading && <p>Pokémon worden geladen...</p>}
             {pokemon.map((fetchedPokemon) => (
                 <PokemonCard
                     key={fetchedPokemon.id}

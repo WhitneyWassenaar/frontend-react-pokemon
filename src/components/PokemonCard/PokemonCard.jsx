@@ -2,6 +2,7 @@ import './PokemonCard.css';
 
 function PokemonCard({pokemonName,pokemonUrl,pokemonAltText,pokemonMoves,pokemonWeight,pokemonAbilities}) {
     return (
+
         <div className='pokemon-card'>
             <h2>{pokemonName}</h2>
             <img src={pokemonUrl} alt={pokemonAltText} />
