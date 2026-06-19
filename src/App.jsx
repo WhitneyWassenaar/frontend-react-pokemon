@@ -12,15 +12,17 @@ function App() {
     const [loading,setLoading] = useState(false);
     const [error,setError] =useState(null);
 
-    const getPokemonData = async (url) => {
+
+
+    const getPokemonData = async (url,controller) => {
         setLoading(true);
         setError(null);
         try{
-            const pokemonList = await axios.get(url);
+            const pokemonList = await axios.get(url,{signal:controller.signal});
             const results = pokemonList.data.results;
 
             const pokemonDetail = results.map(async (p) => {
-                const response = await axios.get(p.url);
+                const response = await axios.get(p.url,{signal:controller.signal});
                 return response.data
             });
 
@@ -41,16 +43,24 @@ function App() {
     }
 
     useEffect(() => {
-        getPokemonData("https://pokeapi.co/api/v2/pokemon");
-        }, []);
+        const controller = new AbortController();
 
-        const handleNext = () => {
-            getPokemonData(nextUrl);
-        };
+        getPokemonData("https://pokeapi.co/api/v2/pokemon", controller);
 
-        const handlePrevious = () => {
-            getPokemonData(previousUrl);
+        return () => {
+            controller.abort();
         };
+    }, []);
+
+    const handleNext = () => {
+        const controller = new AbortController();
+        getPokemonData(nextUrl, controller);
+    };
+
+    const handlePrevious = () => {
+        const controller = new AbortController();
+        getPokemonData(previousUrl, controller);
+    };
 
     return (
         <>
