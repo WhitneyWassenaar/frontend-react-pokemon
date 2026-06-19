@@ -1,1 +1,15 @@
-/*Schrijf hier jouw eigen CSS!*/
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #F1BD00;
+    border: 5px pink solid;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+}
+
